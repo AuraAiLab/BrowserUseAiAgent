@@ -1,71 +1,81 @@
-# Browser-Use AI Agent Kubernetes Deployment
+# Browser-Use AI Agent - MacOS Installation
 
-This repository contains configuration files and documentation for deploying the [browser-use AI agent](https://github.com/browser-use/browser-use) on a Kubernetes cluster using containerd.
+This repository contains installation scripts and documentation for setting up the [browser-use AI agent](https://github.com/browser-use/browser-use) on macOS 14.6.1 (Sonoma).
 
 ## Project Overview
 
-The browser-use AI agent enables AI models to control and interact with web browsers, allowing for autonomous navigation, interaction, and information extraction from websites. This implementation is designed to run within a Kubernetes environment and can be configured to use different AI models.
+The browser-use AI agent enables AI models to control and interact with web browsers, allowing for autonomous navigation, interaction, and information extraction from websites. This implementation is designed to run on macOS systems and can be configured to use different AI models.
 
 ## Repository Structure
 
 ```
 /
 ├── app/                  # Application code for the browser-use agent
-├── configs/              # Configuration files
-│   └── kubernetes/       # Kubernetes manifests
-├── container/            # Container definition files
-│   └── Dockerfile        # Container image definition
+├── configs/              # Configuration files (legacy Kubernetes configs also included)
 ├── docs/                 # Documentation
 └── scripts/              # Installation and utility scripts
+    └── install-local-mac.sh   # MacOS installation script
 ```
 
-## Deployment Instructions
+## Installation Instructions
 
 ### Prerequisites
-- Kubernetes cluster with containerd runtime
-- kubectl configured to access your cluster
+- macOS 14.6.1 (Sonoma) or compatible version
+- Python 3.11+
 - OpenAI API key (for default configuration)
-- Python 3.11+ (for local testing)
 
-### Deployment Steps
-1. Create the namespace:
-   ```
-   kubectl apply -f configs/kubernetes/namespace.yaml
-   ```
+### Installation Steps
 
-2. Configure the API key:
+1. Clone this repository:
    ```
-   # Update the OpenAI API key in the secret before applying
-   kubectl apply -f configs/kubernetes/secret.yaml
+   git clone https://github.com/AuraAiLab/BrowserUseAiAgent.git
+   cd BrowserUseAiAgent
    ```
 
-3. Deploy the application:
+2. Run the installation script:
    ```
-   kubectl apply -f configs/kubernetes/configmap.yaml
-   kubectl apply -f configs/kubernetes/deployment.yaml
-   kubectl apply -f configs/kubernetes/service.yaml
+   ./scripts/install-local-mac.sh
    ```
 
-4. Verify the deployment:
+3. Edit the `.env` file to add your OpenAI API key:
    ```
-   kubectl get pods -n ai-agents
+   OPENAI_API_KEY=your-api-key-here
    ```
 
-## Configuration Options
+4. Run the application:
+   ```
+   ./run-agent.sh
+   ```
 
-The default configuration uses OpenAI's GPT-4o model. Future updates will include options to use Mistral 7b on Ollama.
+5. Access the web interface at:
+   ```
+   http://localhost:7860
+   ```
 
-## Building the Container Image
+## Usage
 
-For containerd-based clusters:
+1. Enter a task for the AI agent in the "Task Description" field.
+2. Select the model you want to use (gpt-4o or gpt-3.5-turbo).
+3. Click "Submit Task" to start the agent.
+4. View the results in the "Results" tab.
 
-```bash
-cd container
-nerdctl build -t browser-use-agent:latest .
-# or using containerd-compatible tools
-```
+## Troubleshooting
 
-## References
+If you encounter any issues:
+- Make sure your OpenAI API key is correctly set in the `.env` file
+- Check that you have an active internet connection
+- Ensure that the virtual environment is activated
 
-- [browser-use GitHub Repository](https://github.com/browser-use/browser-use)
-- [AuraAiLab Kubernetes Setup](https://github.com/AuraAiLab/Ansible-K8-AiServer)
+## Future Plans
+
+Future versions will support integration with:
+- Mistral 7b on Ollama for local LLM capabilities
+- Additional browser automation options
+
+## Legacy Kubernetes Configuration
+
+This repository also contains Kubernetes configuration files in the `configs/kubernetes/` directory, which were used in earlier versions of this project. These are kept for reference but are no longer the primary deployment method.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
