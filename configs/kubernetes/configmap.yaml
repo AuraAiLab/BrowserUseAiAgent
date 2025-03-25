@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: browser-use-config
+  namespace: ai-agents
+data:
+  AGENT_TASK: "Compare the price of gpt-4o and DeepSeek-V3"
+  AGENT_MODEL: "gpt-4o"
+  LOG_LEVEL: "INFO"

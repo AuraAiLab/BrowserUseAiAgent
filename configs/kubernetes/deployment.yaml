@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: browser-use-agent
+  namespace: ai-agents
+  labels:
+    app: browser-use-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: browser-use-agent
+  template:
+    metadata:
+      labels:
+        app: browser-use-agent
+    spec:
+      containers:
+      - name: browser-use-agent
+        image: browser-use-agent:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ai-agent-secrets
+              key: openai-api-key
+        - name: AGENT_TASK
+          valueFrom:
+            configMapKeyRef:
+              name: browser-use-config
+              key: AGENT_TASK
+        - name: AGENT_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: browser-use-config
+              key: AGENT_MODEL
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: browser-use-config
+              key: LOG_LEVEL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: app-volume
+          mountPath: /app
+      volumes:
+      - name: app-volume
+        emptyDir: {}
